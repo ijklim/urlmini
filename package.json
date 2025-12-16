@@ -1,20 +1,17 @@
 {
-	"name": "urlmini",
-	"version": "1.0.0",
-	"description": "URL Shortener, a freeCodeCamp project",
-	"author": "Ivan Lim <aimprove@gmail.com>",
-	"dependencies": {
-		"express": "^4.16.0"
-	},
-	"main": "server.js",
-	"scripts": {
-		"start": "node server.js"
-	},
-	"engines": {
-		"node": "8.9.4"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ijklim/tiny-url.git"
-	}
+  "type": "module",
+  "name": "urlmini",
+  "version": "1.0.0",
+  "description": "URL Shortener",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
 }

@@ -5,7 +5,7 @@
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
-  <title>URL Shortener v.1</title>
+  <title>URL Shortener</title>
 
   <style>
     html {
@@ -29,22 +29,60 @@
 <body>
   <h1>Welcome to URL Shortener</h1>
 
-  <h2>Example creation usage:</h2>
+  <h2>How to shorten a URL</h2>
 
-  <ul>
-    <li><code>https://urlmini.glitch.me/new/https://google.com</code></li>
-    <li><code>https://urlmini.glitch.me/new/https://codepen.io</code></li>
-    <li><code>https://urlmini.glitch.me/new/https://github.com</code></li>
+  <ol>
+    <li>Choose the long URL you want to shorten — for example <code>https://google.com</code>.</li>
+    <li>Open the creation endpoint in your browser (or paste it into your address bar): <code data-create="/new/https://google.com"></code></li>
+    <li>The server will respond with JSON that includes a <code>short_url</code>. Visiting that short URL will redirect to <code>https://google.com</code>.</li>
+  </ol>
+
+  <h2>Recent mappings:</h2>
+
+  <ul id="mappings-list">
+    <li>Loading mappings...</li>
   </ul>
 
-  <h2>Sample usage:</h2>
+  <script>
+    // Populate example URLs with the current origin (scheme + host + optional port)
+    (() => { // IIFE: runs immediately on page load
+      // Get the runtime origin (e.g., "http://localhost:3000")
+      const origin = window.location.origin;
 
-  <ul>
-    <li><code>https://urlmini.glitch.me/1</code></li>
-    <li><code>https://urlmini.glitch.me/2</code></li>
-  </ul>
-  
+      // Fill creation examples and creation endpoint: take the path from `data-sample`/`data-create` and prepend origin
+      document.querySelectorAll('code[data-sample]').forEach(el => {
+        el.textContent = origin + el.getAttribute('data-sample');
+      });
+      document.querySelectorAll('code[data-create]').forEach(el => {
+        el.textContent = origin + el.getAttribute('data-create');
+      });
 
+      // Fetch current mappings from the server and render them
+      fetch('/api/mappings').then(res => res.json()).then(list => {
+        const ul = document.getElementById('mappings-list');
+        ul.innerHTML = '';
+        if (!list || list.length === 0) {
+          ul.innerHTML = '<li>No mappings yet</li>';
+          return;
+        }
+        list.forEach(item => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          // Build the short URL from the current origin and the mapping id so the port is correct
+          const shortUrl = origin + '/' + item.id;
+          a.href = shortUrl;
+          a.textContent = shortUrl + ' → ' + item.original_url;
+          a.target = '_blank';
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+      }).catch(err => {
+        const ul = document.getElementById('mappings-list');
+        ul.innerHTML = '<li>Error loading mappings</li>';
+        console.error(err);
+      });
+    })(); // immediately invoked
+  </script>
 </body>
 
 </html>
