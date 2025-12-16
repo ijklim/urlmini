@@ -34,6 +34,16 @@ app.get('/api/mappings', (req, res) => {
   res.json(us.getAllMappings());
 });
 
+// Serve a simple SVG favicon at /favicon.ico (works in modern browsers)
+app.get('/favicon.ico', (req, res) => {
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">` +
+    `<rect width="64" height="64" fill="#4CAF50"/>` +
+    `<text x="32" y="40" font-family="Verdana,Segoe UI,Helvetica,Arial" font-size="36" text-anchor="middle" fill="#fff">U</text>` +
+    `</svg>`;
+  res.type('image/svg+xml').send(svg);
+});
+
 // Static files
 app.use('/public', express.static(path.join(process.cwd(), 'public')));
 
